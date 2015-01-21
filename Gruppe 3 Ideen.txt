@@ -1,0 +1,16 @@
+Diese Gruppe beschräftigt sich mit der Steuerung des Roboters und einem Raspberry PI Framework
+
+Ideen bisher:
+
+- Einfaches laufen (Vorwärts, Rückwärts, Links, Rechts)
+- Drehen (z.B. 90°) 
+- Spaß-Aktionen (Springen, Tanzen, Kämpfen)
+- Fernsteuern per Smartphone (App oder Webinterface)
+
+
+Vorgehen:
+
+- Planung Scrum
+- Planung UML
+- Planung vom weiteren Vorgehen
+

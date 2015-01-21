@@ -1,0 +1,55 @@
+Allgmein: 
+
+Benötigte Teile:
+- Kurzes MiniUSB
+- Kurzes MicroUSB
+- Schrumpfschlauch
+- Ferritkerne
+- 
+
+
+
+22:05 24.11.2014
+- Mit Bluetooth und nur einem Akku verliert Bodo die Verbindung.
+
+Lösung:
+Keine Batterien verwenden und zusätzliche Stromversorgung für den MC. Empfohlen werden 2700mAh NiMH/NiCad Akkus für die Servos und eine 9V Blockbatterie für den Mikrocontroller. Die Spannung für die Logik muss höher als die Spannung für die Servos sein.
+
+Quelle:
+http://arcbotics.com/products/hexy/powering-hexy/
+
+
+
+- Bluetooth mit PoMoCo läuft erst, wenn man die Baudrate auf dem MC auf 9600 Baud setzt.
+
+- Servos Zittern (Jitter)
+Lösung: Leitungen mit Ferritmagneten Abschirmen. Z.B. 
+http://www.conrad.de/ce/de/product/500575/Ferrit-Ringkern-beschichtet-Kabel-max-6-mm-11-mm-ausseninnen-Epcos-B64290L38X830-1-St/?ref=home&rt=home&rb=1
+
+
+
+
+
+
+
+
+
+
+13:48 01.12.2014
+Probleme:
+- Bewegungssensor anschließen
+	- Kabel angelötet
+	- An MC angeschlossen
+	- Anschluss am MC
+	- 
+
+
+
+16:15 08.12.2014
+Probleme:
+- Upload auf Servotor nicht möglich.
+
+Lösung: Nicht LeonardoTreiber nutzen sondern Servotor Treiber nutzen
+
+
+
