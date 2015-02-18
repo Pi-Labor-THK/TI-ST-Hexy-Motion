@@ -5,7 +5,6 @@ Created on 16.02.2015
 '''
 import serial
 from Motion.Speed import Speed
-from Motion.Directions import Direction
 from Motion.Servo import Servo
 
 class SerialWrapper(object):
@@ -32,11 +31,17 @@ class SerialWrapper(object):
         Name    Default    Min    Max    Comment
         ----------------------------------------
         Degree  90         0      180
+        
+        90°  Is the default value, the sensor is directed to the front.
+        0°   Corresponds to right
+        180° Corresponds to left
+        
+        Please note, that negative values are unsupported
         """
         if Degree < 0 or Degree > 180:
             raise ValueError("Degree is a value between 0 and 180.")
         
-        command = bytes(("0,{0},0,0,0".format(Degree)),encoding = "ascii")
+        command = bytes(("0,{0},0,0".format(Degree)),encoding = "ascii")
         self.ser.write(command)
               
         output = str(self.ser.read(3),'ascii')
@@ -45,23 +50,28 @@ class SerialWrapper(object):
         else:
             raise Exception("Could not read correct value: {0}".format(output))
     
-    def Move(self,Angle = 0, _Speed = Speed.Undefined, _Direction = Direction.Undefined, Distance = 0):
+    def Move(self,Angle = 90, _Speed = Speed.Undefined, Distance = 0):
         """Move Synchronously
         
         Arguments
         Name        Default    Min    Max    Comment
         --------------------------------------------------
-        Angle       0          0      359
+        Angle       90         0      359
         _Speed      Undefined                T:Speed
-        _Direction  Undefined                T:Direction
         Distance    0          1      max    in cm
+        
+        Angle definition:
+        90°  Is the default value (front)
+        0°   Corresponds to right
+        180° Corresponds to left
+        270° Corresponds to back
+        
+        Please note, that negative values are unsupported
+        
         """
         
         if not isinstance(_Speed, Speed):
             raise ValueError("_Speed must be instance of Speed")
-        
-        if not isinstance(_Direction, Direction):
-            raise ValueError("_Direction must be instance of Direction")
 
         if Angle < 0 or Angle > 359:
             raise ValueError("Angle is a value between 0 and 359.")
@@ -69,13 +79,10 @@ class SerialWrapper(object):
         if _Speed is Speed.Undefined:
             raise ValueError("_Speed cannot be undefined.")
         
-        if _Direction is Direction.Undefined:
-            raise ValueError("_Direction cannot be undefined.")
-        
         if Distance < 1:
             raise ValueError("Distance has to be greater than 1.")
 
-        command = bytes(("1,{0},{1},{2},{3}".format(Angle,_Speed,_Direction,Distance)),encoding = "ascii")
+        command = bytes(("1,{0},{1},{2}".format(Angle,_Speed,Distance)),encoding = "ascii")
         self.ser.write(command)
               
         output = str(self.ser.read(3),'ascii')
@@ -85,32 +92,34 @@ class SerialWrapper(object):
             raise Exception("Could not read correct value: {0}".format(output))
 
 
-    def BeginMove(self,Angle = 0, _Speed = Speed.Undefined, _Direction = Direction.Undefined,): 
+    def BeginMove(self,Angle = 90, _Speed = Speed.Undefined): 
         """Move Asynchronously
         
         Arguments
         Name        Default    Min    Max    Comment
         --------------------------------------------------
-        Angle       0          0      359
+        Angle       90         0      359
         _Speed      Undefined                T:Speed
         _Direction  Undefined                T:Direction
+        
+        Angle definition:
+        90°  Is the default value (front)
+        0°   Corresponds to right
+        180° Corresponds to left
+        270° Corresponds to back
+        
+        Please note, that negative values are unsupported
         """
         if not isinstance(_Speed, Speed):
             raise ValueError("_Speed must be instance of Speed")
         
-        if not isinstance(_Direction, Direction):
-            raise ValueError("_Direction must be instance of Direction")
-
         if Angle < 0 or Angle > 359:
             raise ValueError("Angle is a value between 0 and 359.")
         
         if _Speed is Speed.Undefined:
             raise ValueError("_Speed cannot be undefined.")
         
-        if _Direction is Direction.Undefined:
-            raise ValueError("_Direction cannot be undefined.")
-        
-        command = bytes(("2,{0},{1},{2},0".format(Angle,_Speed,_Direction)),encoding = "ascii")
+        command = bytes(("2,{0},{1},0".format(Angle)),encoding = "ascii")
         self.ser.write(command)
               
         output = str(self.ser.read(3),'ascii')
@@ -121,7 +130,7 @@ class SerialWrapper(object):
         
     def EndMove(self):
         """End Asynchronous move"""
-        command = bytes("3,0,0,0,0",encoding = "ascii")
+        command = bytes("3,0,0,0",encoding = "ascii")
         self.ser.write(command)
               
         output = str(self.ser.read(3),'ascii')
@@ -131,7 +140,7 @@ class SerialWrapper(object):
             raise Exception("Could not read correct value: {0}".format(output))
     def StandUp(self):
         """Let Stand Up"""
-        command = bytes("4,0,0,0,0",encoding = "ascii")
+        command = bytes("4,0,0,0",encoding = "ascii")
         self.ser.write(command)
               
         output = str(self.ser.read(3),'ascii')
@@ -141,7 +150,7 @@ class SerialWrapper(object):
             raise Exception("Could not read correct value: {0}".format(output))
     def LayDown(self):
         """Let Lay Down"""
-        command = bytes("5,0,0,0,0",encoding = "ascii")
+        command = bytes("5,0,0,0",encoding = "ascii")
         self.ser.write(command)
               
         output = str(self.ser.read(3),'ascii')
@@ -149,6 +158,7 @@ class SerialWrapper(object):
             return output.split(',')[1]
         else:
             raise Exception("Could not read correct value: {0}".format(output))
+        
     def MoveServo(self,_Servo = Servo.Undefined,Value = 0):
         """Address Servo directly
         
@@ -168,7 +178,7 @@ class SerialWrapper(object):
         if _Servo is Servo.Undefined:
             raise ValueError("_Servo cannot be undefined.")
         
-        command = bytes(("6,{0},{1},0,0".format(_Servo,Value)),encoding = "ascii")
+        command = bytes(("6,{0},{1},0".format(_Servo,Value)),encoding = "ascii")
         self.ser.write(command)
               
         output = str(self.ser.read(3),'ascii')
