@@ -2,7 +2,7 @@
 Servotor32 hexy;
 
 unsigned long previousMillis = 0;
-long interval = 80;
+long interval = 10;
 
 unsigned long millisekunden = 0;
 
@@ -15,45 +15,54 @@ const int beinHoeheMax = 2350; //Größer -> Tiefer
 const int fussHoeheMin = 900;
 const int fussHoeheMax = 1400;
 
-double frequenz = 1;
+double frequenz = 0;
+int spd = 8;
 
 int richtung = 0;
+
+unsigned int zyklusCounter = 0;
 
 void setup() {
   hexy.begin();
 
   //standUp();
   //hexy.delay_ms(60000);
+
+
 }
 
 
 void loop() {
+
   parseSerial();
 
   //Um Prozessorzeit für anderes zu sparen und die Servos nicht unnötig zu aktualisieren hier eine Art Timer
   unsigned long currentMillis = hexy.millis_new();
-  if (currentMillis - previousMillis >= interval) {
+  if (currentMillis - previousMillis >= interval && frequenz != 0) {
     previousMillis = currentMillis;
-    run(richtung, frequenz); //Frequenz = Geschwindigkeit von 0-4
+    run(richtung, frequenz);
   }
 }
 
-void run(int richtung, int frequenz) {
-  if (frequenz > 4)
-    frequenz = 4;
-  if (frequenz < -4)
-    frequenz = -4;
+inline void run(int richtung, int frequenz) {
+  //  if (frequenz > 4)
+  //    frequenz = 4;
+  //  if (frequenz < -4)
+  //    frequenz = -4;
 
   //millisekunden = hexy.millis_new();
-  millisekunden+=50;
-  
+  millisekunden += spd;
+
 
   //Horizontal
-  int beinPos1 = map(180 * sin(2 * 3.14 * frequenz * millisekunden), -180, 180, schrittweiteMin+richtung, schrittweiteMax);
-  int beinPos2 = map(180 * sin(2 * 3.14 * frequenz * millisekunden), -180, 180, schrittweiteMax, schrittweiteMin-richtung);
+
+  int sinus = 180 * sin(6.28 * frequenz * millisekunden);
+  int beinPos1 = map(sinus, -180, 180, schrittweiteMin + richtung, schrittweiteMax);
+  int beinPos2 = map(sinus, -180, 180, schrittweiteMax, schrittweiteMin - richtung);
   //Vertikal
-  int beinHoehe1 = map(180 * sin(2 * 3.14 * frequenz * millisekunden + 3.14 / 2), -180, 180, beinHoeheMin, beinHoeheMax);
-  int beinHoehe2 = map(180 * sin(2 * 3.14 * frequenz * millisekunden + 3.14 / 2), -180, 180, beinHoeheMax, beinHoeheMin);
+  sinus = 180 * sin(6.28 * frequenz * millisekunden + 1.57);
+  int beinHoehe1 = map(sinus, -180, 180, beinHoeheMin, beinHoeheMax);
+  int beinHoehe2 = map(sinus, -180, 180, beinHoeheMax, beinHoeheMin);
   //Füße
   int fussPos1 = map(beinHoehe1, beinHoeheMin, beinHoeheMax, fussHoeheMin, fussHoeheMax); //map(180*sin(2*3.14*speed*hexy.millis_new()+1.57),-180,180,1100,1500);
   int fussPos2 = map(beinHoehe2, beinHoeheMin, beinHoeheMax, fussHoeheMin, fussHoeheMax); //map(180*sin(2*3.14*speed*hexy.millis_new()+1.57),-180,180,1500,1100);
@@ -102,7 +111,7 @@ void run(int richtung, int frequenz) {
   hexy.changeServo(18, fussPos2);
 }
 
-void parseSerial() {
+inline void parseSerial() {
   if (Serial.available()) {
     char inChar = (char)Serial.read();
     switch (inChar) {
@@ -137,6 +146,21 @@ void parseSerial() {
         Serial.println(interval);
         break;
 
+      case 's':
+        spd = Serial.parseInt();
+        Serial.print("Speed: ");
+        Serial.println(spd);
+        break;
+
+      case 'u':
+        standUp();
+        break;
+
+      case 'f': //flat
+        for (int i = 5; i < 31; i++)
+          hexy.changeServo(i, 1500);
+        break;
+
       default:
         break;
     }
@@ -144,56 +168,89 @@ void parseSerial() {
 }
 
 void standUp() {
-  //Beine hoch
-  hexy.changeServo(6, 1000);
-  hexy.changeServo(10, 1000);
-  hexy.changeServo(14, 1000);
-  hexy.changeServo(17, 1000);
-  hexy.changeServo(21, 1000);
-  hexy.changeServo(25, 1000);
-
-  //Füße hoch
-  hexy.changeServo(5, 1000);
-  hexy.changeServo(9, 1000);
-  hexy.changeServo(13, 1000);
-  hexy.changeServo(18, 1000);
-  hexy.changeServo(22, 1000);
-  hexy.changeServo(26, 1000);
-
-  hexy.delay_ms(1000);
-
-  //Beine gerade
-  hexy.changeServo(7, 1500);
+  //Alle Beine zusammenfahren
+  hexy.changeServo(7, 1800);
   hexy.changeServo(11, 1500);
-  hexy.changeServo(15, 1500);
-  hexy.changeServo(16, 1500);
+  hexy.changeServo(15, 1200);
+  hexy.changeServo(16, 1800);
   hexy.changeServo(20, 1500);
-  hexy.changeServo(24, 1500);
+  hexy.changeServo(24, 1200);
+  hexy.delay_ms(500);
 
-  //Füße und Beine runter
-  int start = 1000;
-  int toEnd = 1900;
-  
-  int footStart = 500;
-  int footEnd = 900;
-  
-  int standUpSpeed = 10;
+  //Beine
+  hexy.changeServo(6, 600);
+  hexy.changeServo(10, 600);
+  hexy.changeServo(14, 600);
+  hexy.changeServo(17, 600);
+  hexy.changeServo(21, 600);
+  hexy.changeServo(25, 600);
+  hexy.delay_ms(500);
 
-  for (int i = start; i < toEnd; i += standUpSpeed) {
+  //Füße nach unten
+  hexy.changeServo(5, 600);
+  hexy.changeServo(9, 600);
+  hexy.changeServo(13, 600);
+  hexy.changeServo(18, 600);
+  hexy.changeServo(22, 600);
+  hexy.changeServo(26, 600);
+  hexy.delay_ms(500);
 
+  for (int i = 900; i < 1600; i += 20) {
+
+    //Beine nach unten fahren
     hexy.changeServo(6, i);
     hexy.changeServo(10, i);
     hexy.changeServo(14, i);
     hexy.changeServo(17, i);
     hexy.changeServo(21, i);
     hexy.changeServo(25, i);
+    //Füße unten halten
+    int angle = map(i, 900, 1600, 500, 600);
+    hexy.changeServo(5, angle);
+    hexy.changeServo(9, angle);
+    hexy.changeServo(13, angle);
+    hexy.changeServo(18, angle);
+    hexy.changeServo(22, angle);
+    hexy.changeServo(26, angle);
+  }
 
-    hexy.changeServo(5, map(i, start, toEnd, footStart, footEnd));
-    hexy.changeServo(9, map(i, start, toEnd, footStart, footEnd));
-    hexy.changeServo(13, map(i, start, toEnd, footStart, footEnd));
-    hexy.changeServo(18, map(i, start, toEnd, footStart, footEnd));
-    hexy.changeServo(22, map(i, start, toEnd, footStart, footEnd));
-    hexy.changeServo(26, map(i, start, toEnd, footStart, footEnd));
+  hexy.delay_ms(500);
+  for (int j = 0; j < 1; j++) {
+    //Letzendlich komplett aufrichten
+    hexy.changeServo(6, 900);
+    hexy.changeServo(14, 900);
+    hexy.changeServo(21, 900);
+    hexy.delay_ms(500);
+
+    for (int i = 900; i < 2350; i += 20) {
+      hexy.changeServo(6, i);
+      hexy.changeServo(14, i);
+      hexy.changeServo(21, i);
+
+
+      int angle = map(i, 900, 2350, 500, 1400);
+      hexy.changeServo(5, angle);
+      hexy.changeServo(13, angle);
+      hexy.changeServo(22, angle);
+    }
+    hexy.delay_ms(500);
+
+    //Andere Seite
+    hexy.changeServo(25, 900);
+    hexy.changeServo(17, 900);
+    hexy.changeServo(10, 900);
+    hexy.delay_ms(500);
+
+    for (int i = 900; i < 2350; i += 20) {
+      hexy.changeServo(25, i);
+      hexy.changeServo(17, i);
+      hexy.changeServo(10, i);
+
+      int angle = map(i, 900, 2350, 500, 1400);
+      hexy.changeServo(26, angle);
+      hexy.changeServo(18, angle);
+      hexy.changeServo(9, angle);
+    }
   }
 
 }

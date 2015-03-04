@@ -6,11 +6,12 @@ Created on 16.02.2015
 import serial
 from Motion.Speed import Speed
 from Motion.Servo import Servo
-
 class SerialWrapper(object):
     '''
     classdocs
     '''
+    asyncStarted = False
+    
     def __init__(self, Port):
         
         if isinstance(Port, int):
@@ -100,7 +101,6 @@ class SerialWrapper(object):
         --------------------------------------------------
         Angle       90         0      359
         _Speed      Undefined                T:Speed
-        _Direction  Undefined                T:Direction
         
         Angle definition:
         90°  Is the default value (front)
@@ -119,7 +119,8 @@ class SerialWrapper(object):
         if _Speed is Speed.Undefined:
             raise ValueError("_Speed cannot be undefined.")
         
-        command = bytes(("2,{0},{1},0".format(Angle)),encoding = "ascii")
+        self.asyncStarted = True
+        command = bytes(("2,{0},{1},0".format(Angle,_Speed)),encoding = "ascii")
         self.ser.write(command)
               
         output = str(self.ser.read(3),'ascii')
@@ -128,8 +129,31 @@ class SerialWrapper(object):
         else:
             raise Exception("Could not read correct value: {0}".format(output))
         
+    def ChangeMove(self,Angle = 90, _Speed = Speed.Undefined):
+        if not isinstance(_Speed, Speed):
+            raise ValueError("_Speed must be instance of Speed")
+        
+        if Angle < 0 or Angle > 359:
+            raise ValueError("Angle is a value between 0 and 359.")
+        
+        if _Speed is Speed.Undefined:
+            raise ValueError("_Speed cannot be undefined.")
+        
+        if not self.asyncStarted:
+            return self.BeginMove(Angle, _Speed)
+        
+        command = bytes(("7,{0},{1},0".format(Angle,_Speed)),encoding = "ascii")
+        self.ser.write(command)
+              
+        output = str(self.ser.read(3),'ascii')
+        if (output[0] == '2'):
+            return
+        else:
+            raise Exception("Could not read correct value: {0}".format(output))
+    
     def EndMove(self):
         """End Asynchronous move"""
+        self.asyncStarted = False
         command = bytes("3,0,0,0",encoding = "ascii")
         self.ser.write(command)
               

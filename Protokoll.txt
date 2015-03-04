@@ -12,7 +12,7 @@ Move
 
 BeginMove
    Identifier,	Angle,		Speed,		void
->> 2, 		int(0:180), 	int(1:4), 	int(0)
+>> 2, 		int(0:359), 	int(1:4), 	int(0)
 
 EndMove
    Identifier,	void,		void,		void
@@ -34,3 +34,7 @@ LayDown
 MoveServo
    Identifier,	ServoNumber,	value,		void
 >> 6,		int(5,31),	int(0,180)	int(0)
+
+ChangeMove
+   Identifier,	Angle,		Speed,		void
+>> 7, 		int(0:359), 	int(1:4), 	int(0)
