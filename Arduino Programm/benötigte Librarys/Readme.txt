@@ -1,0 +1,1 @@
+In dieser Version wurde der Timer wieder aktiviert. Das Servo-Jittern hat dadurch nicht zugenommen, aber alle Funktionen wie Seria.parseInt() sind wieder verfügbar.
