@@ -1,21 +1,8 @@
-[Motion]
+﻿[Motion]
   [verlangt]
     -
   [angeboten]
     GetDistance(degree : int)
-	  Get Distance at a certain degree
-			
-			Arguments
-			Name    Default    Min    Max    Comment
-			----------------------------------------
-			Degree  90         0      180
-			
-			90°  Is the default value, the sensor is directed to the front.
-			0°   Corresponds to right
-			180° Corresponds to left
-			
-			Please note, that negative values are unsupported
-	
 	Move(Angle : int, _Speed : Speed, Distance : int)
 		Move Synchronously
         
@@ -71,4 +58,13 @@
 			--------------------------------------------------
 			_Servo                               T:Servo
 			Value       0          0      180
-		
+	
+	Tend(Angle : int)
+        """Tend with front servos
+        
+        Arguments
+        Name        Default    Min    Max    Comment
+        --------------------------------------------------
+        _Servo                               T:Servo
+        Angle       0          0      60
+        """

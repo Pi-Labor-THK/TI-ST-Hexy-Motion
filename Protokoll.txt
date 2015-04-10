@@ -1,12 +1,11 @@
 
 Used-Case-Diagramm und im Komponenten-Diagramm
 
-Getdistance -überflüssig
-   Identifier, 	Degree,		void,		void,
->> 0, 		int(0:180), 	int(0), 	int(0)
-   Identifier,	Distance
-<< 0,		int(0:200)
-
+GetDistance
+     Identifier	Angle		void		void
+>>   0		int(0:180) 	int(0)		int(0)
+     Identifier CompleteMarker	
+<<   0		int(1)
 
 Move //Negative Werte enspricht gegen den Uhrzeigersinn
    Identifier	Angle,		Speed		Distance
@@ -15,10 +14,10 @@ Move //Negative Werte enspricht gegen den Uhrzeigersinn
 << 1,		int(1)
 
 
-
 BeginMove
    Identifier,	Angle,		Speed,		void
 >> 2, 		int(0:359), 	int(1:4), 	int(0)
+
 
 EndMove
    Identifier,	void,		void,		void
@@ -50,4 +49,14 @@ MoveServo
 ChangeMove
    Identifier,	Angle,		Speed,		void
 >> 7, 		int(0:359), 	int(1:4), 	int(0)
+
+
+Tend //Neigen
+   Identifier,  Angle,		void,		void
+>> 8,		int(0:60)	int(0)		int(0)
+   Identifier   CompleteMarker
+<< 8,		int(1)
+
+
+
 

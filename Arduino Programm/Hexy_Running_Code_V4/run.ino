@@ -1,3 +1,17 @@
+
+//Update()                        - Prüft, ob es an der Zeit ist die Servos zu aktualiseren
+//Run(int richtung, int frequenz) - Lässt die Hexy in die entsprehende Richtung laufen. Die Frequenz kann geändert werden, aber bei 1 ist die Bewegung am flüssigsten.
+
+//Use virtual Timer to check whether an update for the servos is needed.
+inline void update() {
+  //Set up servos with 50Hz. Updating more often steals response time from serial communication
+  unsigned long currentMillis = hexy.millis_new();
+  if (currentMillis - previousMillis >= interval && spd != 0) {
+    previousMillis = currentMillis;
+    run(richtung, frequenz);
+  }
+}
+
 inline void run(int richtung, int frequenz) {
   //  if (frequenz > 4)
   //    frequenz = 4;

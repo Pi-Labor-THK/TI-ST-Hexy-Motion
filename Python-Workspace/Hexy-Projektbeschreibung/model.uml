@@ -7,10 +7,6 @@
         <ownedParameter xmi:id="_7aVR0LesEeSTl9pLRW1etg" name="Port"/>
       </ownedOperation>
       <ownedOperation xmi:id="_QtfGYLetEeSTl9pLRW1etg" name="CloseSerial"/>
-      <ownedOperation xmi:id="_TBcGALetEeSTl9pLRW1etg" name="GetDistance">
-        <ownedParameter xmi:id="_U5IAYLetEeSTl9pLRW1etg" name="Degree"/>
-        <ownedParameter xmi:id="_hqzjILetEeSTl9pLRW1etg" name="Distance" visibility="private" direction="out"/>
-      </ownedOperation>
       <ownedOperation xmi:id="_YNpFILetEeSTl9pLRW1etg" name="Move">
         <ownedParameter xmi:id="_aMSjILetEeSTl9pLRW1etg" name="Angle"/>
         <ownedParameter xmi:id="_bQMQILetEeSTl9pLRW1etg" name="Speed" type="_eSmGoLesEeSTl9pLRW1etg"/>
@@ -30,6 +26,9 @@
       <ownedOperation xmi:id="_367WQLetEeSTl9pLRW1etg" name="MoveServo">
         <ownedParameter xmi:id="_7CPsgLetEeSTl9pLRW1etg" name="Servo" type="_cnTpgLesEeSTl9pLRW1etg"/>
         <ownedParameter xmi:id="_8qe1oLetEeSTl9pLRW1etg" name="Value"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="_lEZT4N9nEeSptMqRMUL8pg" name="tend">
+        <ownedParameter xmi:id="_naMtoN9nEeSptMqRMUL8pg" name="Angle"/>
       </ownedOperation>
     </packagedElement>
     <packagedElement xmi:type="uml:Enumeration" xmi:id="_cnTpgLesEeSTl9pLRW1etg" name="Servo">

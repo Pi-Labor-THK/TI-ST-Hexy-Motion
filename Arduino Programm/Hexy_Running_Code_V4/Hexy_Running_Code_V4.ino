@@ -1,10 +1,13 @@
+//Emmilein die kleine Spinne...
+//Hier läuft alles zusammen.
+
+
 #include "Servotor32.h" // call the servotor32 Library
 Servotor32 hexy;
 
 //Global Variables
-
-//Do not change this
-unsigned long millisekunden = 0;
+//Do not touch...
+unsigned long millisekunden = 0; //replace of millis() for calculate sine.
 unsigned long previousMillis = 0; //Used for virtual Timer
 
 //***************************************************SET UP RUNNING-PARAMETER HERE**************************************************************
@@ -23,27 +26,23 @@ const int beinHoeheMax = 2350; //Größer -> Tiefer
 const int fussHoeheMin = 900;
 const int fussHoeheMax = 1400;
 
-int frequenz = 2; //Frequency of the sine. Change for more or less speed. If you change this value while running it's cogging. So spd is used for changing speed. Negative frequency causes reversal.
-int spd = 20;     //This is the running speed of hexy. It's used for counting up milliseconds, so higher spd causes faster running but to high causes cogging.
+int frequenz = 1; //Frequency of the sine. Change for more or less speed. If you change this value while running it's cogging. So spd is used for changing speed. Negative frequency causes reversal.
 
+
+//****************************************************Programmvariablen**************************************************************************
+     
 int richtung = 0; //0 Geradeaus, 90 ^= 90Grad rechts, -90 ^= -90Grad links
-
+int spd = 0;//This is the running speed of hexy. It's used for counting up milliseconds, so higher spd causes faster running but to high causes cogging.
 
 void setup() {
   hexy.begin();
-  standUp(); //Hexy should standup at first... (Can be removed by logic group)
-  hexy.delay_ms(20000); //Wait is just for testing standup().
+  //standUp();
+
 }
 
 void loop() {
-
+  update(); //Check if Servos have to be updated
   parseSerial(); //Look for new commands
-  //Um Prozessorzeit für anderes zu sparen und die Servos nicht unnötig zu aktualisieren hier eine Art Timer
-  unsigned long currentMillis = hexy.millis_new();
-  if (currentMillis - previousMillis >= interval && frequenz != 0) {
-    previousMillis = currentMillis;
-    run(richtung, frequenz);
-  }
 }
 
 
