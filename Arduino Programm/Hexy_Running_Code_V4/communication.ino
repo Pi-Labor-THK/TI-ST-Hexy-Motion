@@ -1,3 +1,5 @@
+//parseSerial() - Wenn am Com-Port was ansteht wird es abgeholt und dem Protokoll entsprechend geparsed.
+
 inline void parseSerial() {
   if (Serial.available()) {
     //char inChar = (char)Serial.read();
@@ -14,7 +16,6 @@ inline void parseSerial() {
         }
 
       case '2': //Laufen, Richtung,  Geschwindigkeit
-        frequenz = Serial.parseInt();
         richtung = Serial.parseInt();
         spd = Serial.parseInt();
         break;
@@ -39,6 +40,23 @@ inline void parseSerial() {
         }
         Serial.println(8);
         break;
+
+      case '9':
+        turn(Serial.parseInt());
+        break;
+        
+      case 'l':
+      layForward(Serial.parseInt());
+      break;
+
+      case 's':
+      layDown();
+      break;
+
+      case 'a':
+        standUpFull(50);
+        break;
+
 
       default:
         break;
