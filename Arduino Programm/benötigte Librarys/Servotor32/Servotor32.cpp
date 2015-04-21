@@ -69,9 +69,9 @@ void Servotor32::begin(){
     shift_latch[i] = 0xFF;
   } 
 
-  TIMSK0 &= ~(_BV(TOIE0)); // disables the arduino delay function, but also
+ // TIMSK0 &= ~(_BV(TOIE0)); // disables the arduino delay function, but also
                            // all but eliminates servo jitter 
-  TIMSK2 &= ~(_BV(TOIE2)); // disable the arduino tone  function, but also
+ // TIMSK2 &= ~(_BV(TOIE2)); // disable the arduino tone  function, but also
                            // also helps eliminate some jitter
   TIMSK3 &= ~(_BV(TOIE3)); // for good measure
   TIMSK4 &= ~(_BV(TOIE4)); // for good measure 

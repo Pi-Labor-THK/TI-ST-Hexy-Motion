@@ -17,9 +17,17 @@ inline void parseSerial() {
         //        richtung = Serial.parseInt();
         //        spd = Serial.parseInt();
         //        break;
-      case '2': //BeginMove (Richtung, Speed)
+      case '2': //BeginMove (Richtung, Speed) //Drei geschwindigkeitsstufen von Python aus.
         richtung = Serial.parseInt();
         spd = Serial.parseInt();
+        if (spd == 1)
+          spd = 0;
+        if (spd != 0)
+          spd *= 10;
+        if (spd == 0) {
+          turn(int richtung);
+        }
+
         break;
 
       case '3': //EndMove()
