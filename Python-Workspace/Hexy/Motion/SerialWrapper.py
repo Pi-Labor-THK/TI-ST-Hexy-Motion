@@ -42,7 +42,7 @@ class SerialWrapper(object):
         if Degree < 0 or Degree > 180:
             raise ValueError("Degree is a value between 0 and 180.")
         
-        command = bytes(("0,{0},0,0".format(Degree)),encoding = "ascii")
+        command = bytes(("0,{0},0,0e".format(Degree)),encoding = "ascii")
         self.ser.write(command)
               
         output = str(self.ser.read(5),'ascii')
@@ -86,7 +86,7 @@ class SerialWrapper(object):
 		if self.asyncStarted:
 			raise Exception("An asynchronous Operation is running.")
 
-        command = bytes(("1,{0},{1},{2}".format(Angle,_Speed,Distance)),encoding = "ascii")
+        command = bytes(("1,{0},{1},{2}e".format(Angle,_Speed,Distance)),encoding = "ascii")
         self.ser.write(command)
               
         output = str(self.ser.read(3),'ascii')
@@ -123,7 +123,7 @@ class SerialWrapper(object):
             raise ValueError("_Speed cannot be undefined.")
         
         self.asyncStarted = True
-        command = bytes(("2,{0},{1},0".format(Angle,_Speed)),encoding = "ascii")
+        command = bytes(("2,{0},{1},0e".format(Angle,_Speed)),encoding = "ascii")
         self.ser.write(command)
               
         output = str(self.ser.read(3),'ascii')
@@ -145,7 +145,7 @@ class SerialWrapper(object):
         if not self.asyncStarted:
             return self.BeginMove(Angle, _Speed)
         
-        command = bytes(("7,{0},{1},0".format(Angle,_Speed)),encoding = "ascii")
+        command = bytes(("7,{0},{1},0e".format(Angle,_Speed)),encoding = "ascii")
         self.ser.write(command)
               
         output = str(self.ser.read(3),'ascii')
@@ -157,7 +157,7 @@ class SerialWrapper(object):
     def EndMove(self):
         """End Asynchronous move"""
         self.asyncStarted = False
-        command = bytes("3,0,0,0",encoding = "ascii")
+        command = bytes("3,0,0,0e",encoding = "ascii")
         self.ser.write(command)
               
         output = str(self.ser.read(3),'ascii')
@@ -171,7 +171,7 @@ class SerialWrapper(object):
 		if self.asyncStarted:
 			raise Exception("An asynchronous Operation is running.")
 		
-        command = bytes("4,0,0,0",encoding = "ascii")
+        command = bytes("4,0,0,0e",encoding = "ascii")
         self.ser.write(command)
               
         output = str(self.ser.read(3),'ascii')
@@ -185,7 +185,7 @@ class SerialWrapper(object):
 		if self.asyncStarted:
 			raise Exception("An asynchronous Operation is running.")
 		
-        command = bytes("5,0,0,0",encoding = "ascii")
+        command = bytes("5,0,0,0e",encoding = "ascii")
         self.ser.write(command)
               
         output = str(self.ser.read(3),'ascii')
@@ -216,7 +216,7 @@ class SerialWrapper(object):
 		if self.asyncStarted:
 			raise Exception("An asynchronous Operation is running.")
         
-        command = bytes(("6,{0},{1},0".format(_Servo,Value)),encoding = "ascii")
+        command = bytes(("6,{0},{1},0e".format(_Servo,Value)),encoding = "ascii")
         self.ser.write(command)
               
         output = str(self.ser.read(3),'ascii')
@@ -243,11 +243,22 @@ class SerialWrapper(object):
 		if self.asyncStarted:
 			raise Exception("An asynchronous Operation is running.")
         
-        command = bytes(("8,{0},0,0".format(Angle)),encoding = "ascii")
+        command = bytes(("8,{0},0,0e".format(Angle)),encoding = "ascii")
         self.ser.write(command)
               
         output = str(self.ser.read(3),'ascii')
         if (output[0] == '8'):
+            return
+        else:
+            raise Exception("Could not read correct value: {0}".format(output))
+			
+	def TestMove(self):       
+        self.asyncStarted = True
+        command = bytes(("2,90,2,0e"),encoding = "ascii")
+        self.ser.write(command)
+              
+        output = str(self.ser.read(3),'ascii')
+        if (output[0] == '2'):
             return
         else:
             raise Exception("Could not read correct value: {0}".format(output))
