@@ -45,9 +45,9 @@ class SerialWrapper(object):
         command = bytes(("0,{0},0,0".format(Degree)),encoding = "ascii")
         self.ser.write(command)
               
-        output = str(self.ser.read(3),'ascii')
+        output = str(self.ser.read(5),'ascii')
         if (output[0] == '0'):
-            return output.split(',')[1]
+            return int(output.split(',')[1])
         else:
             raise Exception("Could not read correct value: {0}".format(output))
     
@@ -82,6 +82,9 @@ class SerialWrapper(object):
         
         if Distance < 1:
             raise ValueError("Distance has to be greater than 1.")
+			
+		if self.asyncStarted:
+			raise Exception("An asynchronous Operation is running.")
 
         command = bytes(("1,{0},{1},{2}".format(Angle,_Speed,Distance)),encoding = "ascii")
         self.ser.write(command)
@@ -164,6 +167,10 @@ class SerialWrapper(object):
             raise Exception("Could not read correct value: {0}".format(output))
     def StandUp(self):
         """Let Stand Up"""
+		
+		if self.asyncStarted:
+			raise Exception("An asynchronous Operation is running.")
+		
         command = bytes("4,0,0,0",encoding = "ascii")
         self.ser.write(command)
               
@@ -174,6 +181,10 @@ class SerialWrapper(object):
             raise Exception("Could not read correct value: {0}".format(output))
     def LayDown(self):
         """Let Lay Down"""
+		
+		if self.asyncStarted:
+			raise Exception("An asynchronous Operation is running.")
+		
         command = bytes("5,0,0,0",encoding = "ascii")
         self.ser.write(command)
               
@@ -201,6 +212,9 @@ class SerialWrapper(object):
         
         if _Servo is Servo.Undefined:
             raise ValueError("_Servo cannot be undefined.")
+		
+		if self.asyncStarted:
+			raise Exception("An asynchronous Operation is running.")
         
         command = bytes(("6,{0},{1},0".format(_Servo,Value)),encoding = "ascii")
         self.ser.write(command)
@@ -225,6 +239,9 @@ class SerialWrapper(object):
 
         if Angle < 0 or Angle > 60:
             raise ValueError("Angle is a value between 0 and 60.")
+			
+		if self.asyncStarted:
+			raise Exception("An asynchronous Operation is running.")
         
         command = bytes(("8,{0},0,0".format(Angle)),encoding = "ascii")
         self.ser.write(command)
